@@ -7,9 +7,12 @@ import Floating from "react-floating-label-paper-input"
 import TextArea from 'antd/lib/input/TextArea';
 import { Option } from 'antd/lib/mentions';
 import img from "../asset/newLogo.png"
+import { useHistory } from 'react-router';
+import firebase from "firebase"
 
 
 const Home = () => {
+  const hist = useHistory()
   const[imgProfile, setImgProfile] = useState(null)
   const [avatar, setAvatar] = useState(null)
 
@@ -36,14 +39,7 @@ const [agree, setAgree] = useState(false)
 
 
 const hangleImage = async(e) => {
-
-  const file = e.target.files[0]
-  const storageRef = app.storage().ref()
-  const fileRef = storageRef.child(file.name)
-  await fileRef.put(file)
-  setAvatar( await fileRef.getDownloadURL())
-
-
+  
 
   const reader = new FileReader();
     reader.onload = () =>{
@@ -52,6 +48,28 @@ const hangleImage = async(e) => {
       }
     }
     reader.readAsDataURL(e.target.files[0])
+
+
+  const file = e.target.files[0]
+  const storageRef = app.storage().ref()
+  const fileRef = storageRef.child(file.name)
+  await fileRef.put(file)
+  setAvatar( await fileRef.getDownloadURL())
+
+
+}
+
+
+const uploadToBackEndd = async() => {
+  await app.firestore().collection("admission").doc().set({
+    name,
+    avatar,
+    address, phone, email, parent, occupation, future,hobbies, leader, led, soo,
+    interest, education, agree,
+    position, parentAdress,
+    time: firebase.firestore.FieldValue.serverTimestamp()
+  })
+  hist.push('/review')
 }
 
 
@@ -271,13 +289,13 @@ style={{
       setFuture(e.target.value)
      }}      
    />
-    <Floating 
+    {/* <Floating 
      labelName={"Hobbies"}   
      value={hobbies}
      onChange={(e) => {
       setHobbies(e.target.value)
      }}      
-   />
+   /> */}
     <TextArea
      placeholder="What's your Hobbies"  
      style={{
@@ -303,7 +321,7 @@ style={{
      <div>Have you held any leadership position before?</div>
      <select
      style={{
-       width:" 70px",
+       width:" 100px",
        height:"30px",
        paddingLeft:"10px",
        marginLeft:"10px"
@@ -313,6 +331,7 @@ style={{
        setLed(e.target.value)
      }}
      >
+       <option label="Can't Tell" >can't tell</option>
        <option label="Yes" >Yes</option>
        <option label="No" >No</option>
      </select>
@@ -382,9 +401,9 @@ style={{
        marginLeft:"10px",
        fontWeight:"bold"
      }}
-     value={area}
+     value={interest}
      onChange={(e) => {
-       setArea(e.target.value)
+       setInterest(e.target.value)
      }}
      >
        <option label="AI/ML" >AI/ML</option>
@@ -436,7 +455,8 @@ style={{
 }}
 disabled={!agree}
 onClick={()=>{
-  console.log(agree)
+  uploadToBackEndd()
+  // console.log(agree)
 }}
 >Submit</Button>
 </div>

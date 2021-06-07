@@ -3,6 +3,7 @@ import { BrowserRouter, Route, Switch } from "react-router-dom";
 import HomeScreen from "./component/HomeScreen";
 import "antd/dist/antd.css"
 import Home from "./component/Home";
+import Review from "./component/Review";
 
 function App() {
   return (
@@ -10,6 +11,7 @@ function App() {
       <BrowserRouter>
         <Switch>
           <Route path="/" exact component={HomeScreen}  />
+          <Route path="/review" exact component={Review}  />
         </Switch>
       </BrowserRouter>
     </div>
